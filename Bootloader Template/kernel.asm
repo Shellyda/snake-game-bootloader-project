@@ -5,7 +5,7 @@ section .start
     call hide_cursor ; Hide the cursor
 
 start:
-    call start_playing
+    call start_game_loop
     call show_game_over
     jmp start
 
@@ -46,8 +46,8 @@ clear_keyboard_buffer:
 .end:
     ret
 
-; Function to exit the process
-exit_process:
+; Function to exit the program
+exit_program:
     mov ah, 4ch
     int 21h
     ret
@@ -138,7 +138,7 @@ buffer_render:
 
 ; Function to print the score
 print_score:
-    mov si, .start
+    mov si, .score_message
     mov di, 0
     call buffer_print_string
     mov ax, [score]
@@ -158,8 +158,8 @@ print_score:
     jnz .next_digit
     ret
 
-.start:
-    db "PONTOS: 00000", 0
+.score_message:
+    db "SCORE: 00000", 0
 
 ; Function to update the snake direction
 update_snake_direction:
@@ -169,14 +169,14 @@ update_snake_direction:
     mov ah, 0h ; retrieve key from buffer
     int 16h
     cmp al, 27 ; ESC
-    jz exit_process
+    jz exit_program
     cmp ah, 48h ; up
     jz .up
     cmp ah, 50h ; down
     jz .down
-    cmp ah, 4bh ; left
+    cmp ah, 4Bh ; left
     jz .left
-    cmp ah, 4dh ; right
+    cmp ah, 4Dh ; right
     jz .right
     jmp update_snake_direction
 
@@ -299,7 +299,7 @@ update_snake_tail:
     jz .left
     cmp bl, 1 ; right
     jz .right
-    jmp exit_process
+    jmp exit_program
 
 .up:
     dec word [snake_tail_y]
@@ -324,20 +324,20 @@ update_snake_tail:
     call buffer_write
     ret
 
-; Function to create initial foods
-create_initial_foods:
+; Function to create initial food
+create_initial_food:
     mov cx, 1
 
-    ; Creates the initial snake, just the point
-	push cx
+    ; Create the initial snake, just the point
+    push cx
 
-    ; Creates food on the map
+    ; Create food on the map
     call create_food
-			
-	; We need the pop as it will erase the previous game data to
+
+    ; We need the pop as it will erase the previous game data to
     ; - start a new game when we die
     ; - when we click on any key
-	pop cx
+    pop cx
 
 create_food:
 .try_again:
@@ -361,7 +361,7 @@ create_food:
     ret
 
 ; Function to reset variables
-reset:
+reset_game:
     mov ax, 0
     mov word [score], ax
     mov byte [is_game_over], al
@@ -379,11 +379,11 @@ reset:
     mov byte [snake_tail_previous_y], al
     ret
 
-start_playing:
-    call reset
+start_game_loop:
+    call reset_game
     call buffer_clear
     call draw_border
-    call create_initial_foods
+    call create_initial_food
 
 .main_loop:
     ; snake speed
@@ -431,13 +431,13 @@ draw_border:
     ret
 
 show_game_over:
-    mov si, .start_1
+    mov si, .game_over_1
     mov di, 880 + 32
     call buffer_print_string
-    mov si, .start_2
+    mov si, .game_over_2
     mov di, 960 + 32
     call buffer_print_string
-    mov si, .start_1
+    mov si, .game_over_1
     mov di, 1040 + 32
     call buffer_print_string
     call buffer_render
@@ -446,11 +446,11 @@ show_game_over:
     int 16h
     ret
 
-.start_1:
+.game_over_1:
     db "               ", 0
 
-.start_2:
-    db "PERDEUUUU!", 0
+.game_over_2:
+    db "GAME OVER!", 0
 
 section .bss
     score resw 1
@@ -466,7 +466,5 @@ section .bss
     snake_tail_y resb 1
     snake_tail_previous_x resb 1
     snake_tail_previous_y resb 1
-
-    buffer resb 2000
 
     buffer resb 2000
