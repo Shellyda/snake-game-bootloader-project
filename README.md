@@ -37,10 +37,16 @@ Therefore, the game leverages Assembly for its implementation and player interac
 <td align="center"><a href="https://github.com/Shellyda"><img src="https://avatars.githubusercontent.com/u/69990297?v=4" width="100px;" alt=""/><br /><sub><b>Shellyda Barbosa</b></sub></a><br/></td>
 
 <td align="center"><a href="https://github.com/thaisnevest"><img src="https://avatars.githubusercontent.com/u/56198772?v=4" width="100px;" alt=""/><br /><sub><b>Thaís Neves</b></sub></a><br/></td></tr>
-
- 
  </table>
 
+ ## Play
+
+1. In your terminal, go to the Bootloader folder
+2. Run the instruction below
+
+```sh
+  make
+```
 
  ## Contributing
 Any contributions you make are greatly appreciated.
