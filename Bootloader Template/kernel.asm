@@ -159,7 +159,7 @@ print_score:
     ret
 
 .start:
-    db " SCORE: 00000", 0
+    db "PONTOS: 00000", 0
 
 ; Function to update the snake direction
 update_snake_direction:
@@ -440,7 +440,7 @@ show_game_over:
     db "               ", 0
 
 .start_2:
-    db "GAME OVER", 0
+    db "PERDEUUUU!", 0
 
 section .bss
     score resw 1
