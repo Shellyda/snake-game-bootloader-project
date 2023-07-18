@@ -9,7 +9,7 @@
   <p align="center">
     CIn UFPE | July 2023 | Software Infrastructure
     <br />
-    <a href="https://github.com/Shellyda/bootloader-project.git"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/Shellyda/snake-game-bootloader-project.git"><strong>Explore the docs »</strong></a>
     <br />
     <br />
   </p>
@@ -39,7 +39,7 @@ Therefore, the game leverages Assembly for its implementation and player interac
 <td align="center"><a href="https://github.com/thaisnevest"><img src="https://avatars.githubusercontent.com/u/56198772?v=4" width="100px;" alt=""/><br /><sub><b>Thaís Neves</b></sub></a><br/></td></tr>
  </table>
 
- ## Play
+ ## How to play
 
 1. In your terminal, go to the Bootloader folder
 2. Run the instruction below
