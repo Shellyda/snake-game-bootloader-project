@@ -2,7 +2,7 @@
 
   <h2 align="center">Snake Game</h2> 
  <p align="center">
-    <img src="https://github.com/Shellyda/snake-game-bootloader-project/assets/56198772/e18bb56a-5228-44f4-ae2b-a7bc1f37146f" alt="Logo" height="300">
+    <img src="https://github.com/Shellyda/snake-game-bootloader-project/assets/56198772/d9f177ba-42df-437a-b62d-f6707746c8af" alt="Logo" height="300">
   </a>
   <h3 align="center">Game project with Assembly</h3>
 
