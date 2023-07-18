@@ -15,6 +15,17 @@
   </p>
 </p>
 
+## About
+This simple Snake Game 🐍  was developed using Assembly language and incorporates the concept of a bootloader. 
+Assembly is a low-level language that provides precise control over the computer's hardware. 
+The bootloader is a special program that initiates the operating system or other software when the computer is powered on.
+
+In this game, Assembly code is used to create the game's logic and handle player interaction. This includes controlling the snake's movement, detecting collisions, and calculating the score. By using Assembly, direct access to the computer's memory and registers is possible, allowing for a high level of control and efficiency.
+
+The bootloader concept is applied to ensure that the game is properly loaded into the computer's memory and executed as soon as the computer is turned on. The game's code is embedded in a specific sector of the hard drive or a bootable chip, which the bootloader can locate and start running. This enables the game to run independently without relying on a full-fledged operating system.
+
+Therefore, the game leverages Assembly for its implementation and player interaction, while the bootloader concept ensures its correct initialization. This combination of Assembly and bootloader allows for the creation of simple yet efficient games that can be executed directly on the computer's hardware.
+
 ## Contributors
 
 <table>
