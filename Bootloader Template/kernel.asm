@@ -268,7 +268,8 @@ check_snake_new_position:
 
 .food:
     inc dword [score]
-    call .write_new_head
+    call .write_new_head 
+    ; always generate other food
     call create_food
     jmp .end
 
@@ -325,17 +326,23 @@ update_snake_tail:
 
 ; Function to create initial foods
 create_initial_foods:
-    xor cx, cx
+    mov cx, 1
 
-.again:
-    push cx
+    ; Creates the initial snake, just the point
+	push cx
+
+    ; Creates food on the map
     call create_food
-    pop cx
-    loop .again
+			
+	; We need the pop as it will erase the previous game data to
+    ; - start a new game when we die
+    ; - when we click on any key
+	pop cx
 
 create_food:
 .try_again:
     mov ah, 0
+    ; Interruption of frames per sec.
     int 1ah ; cx = hi dx = low
     mov ax, dx
     and ax, 0fffh
@@ -379,6 +386,9 @@ start_playing:
     call create_initial_foods
 
 .main_loop:
+    ; snake speed
+    ; 1 - Fast
+    ; 2 - Hard
     mov si, 2
     call sleep
 
@@ -446,10 +456,6 @@ section .bss
     score resw 1
     is_game_over resb 1
 
-    ; 8 = up
-    ; 4 = down
-    ; 2 = left
-    ; 1 = right
     snake_direction resb 1
 
     snake_head_x resb 1
@@ -460,5 +466,7 @@ section .bss
     snake_tail_y resb 1
     snake_tail_previous_x resb 1
     snake_tail_previous_y resb 1
+
+    buffer resb 2000
 
     buffer resb 2000
