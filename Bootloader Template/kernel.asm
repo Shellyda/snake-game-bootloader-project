@@ -1,10 +1,9 @@
-bits 16
-org 100h
+org 0x7e00
+jmp 0x0000:start
 
-section .text
+section .start
 		call hide_cursor ; Faz o campo
 	start:
-		call show_title
 		call start_playing
 		call show_game_over
 		jmp start
@@ -55,7 +54,6 @@ section .text
 			jnz .next
 			ret
 		
-	; in:
 	;	bl = char
 	;	cx = col
 	;	dl = row
@@ -97,11 +95,6 @@ section .text
 		.end:
 			ret
 		
-	;   0 = snake right
-	;   2 = snake left
-	;   4 = snake down
-	;   8 = snake up
-	; > 8 = ASCII char
 	buffer_render:
 			mov ax, 0b800h
 			mov es, ax
@@ -119,7 +112,7 @@ section .text
 			jz .is_snake
 			jmp .write
 		.is_snake:
-			mov bl, 219
+			mov bl, 260
 		.write:
 			mov byte [es:si], bl
 			inc di
@@ -128,79 +121,8 @@ section .text
 			jnz .next
 			ret
 
-	show_title:
-			call buffer_clear
-			call buffer_render
-			mov si, 18
-			call sleep
-			mov si, 0
-		.next:
-			mov bx, [.title + si]
-			mov byte [buffer + bx], 219
-			push si
-			call buffer_render
-			mov si, 1
-			call sleep
-			pop si
-			add si, 2
-			cmp si, 274
-			jl .next
-			mov si, .text_1
-			mov di, 1626
-			call buffer_print_string
-			mov si, .text_2
-			mov di, 1781
-			call buffer_print_string
-			call clear_keyboard_buffer
-		.wait_for_key:
-			mov si, .text_4
-			mov di, 1388
-			call buffer_print_string
-			call buffer_render
-			mov si, 5
-			call sleep
-			mov ah, 1
-			int 16h
-			jnz .continue
-			mov si, .text_3
-			mov di, 1388
-			call buffer_print_string
-			call buffer_render
-			mov si, 10
-			call sleep
-			mov ah, 1
-			int 16h
-			jz .wait_for_key
-		.continue:
-			mov ah, 0
-			int 16h
-			ret
-		.title:
-			dw 0342, 0341, 0340, 0339, 0338, 0337, 0336, 0335, 0415, 0495
-			dw 0575, 0655, 0656, 0657, 0658, 0659, 0660, 0661, 0662, 0742
-			dw 0822, 0902, 0982, 0981, 0980, 0979, 0978, 0977, 0976, 0975
-			dw 0985, 0905, 0825, 0745, 0665, 0585, 0505, 0425, 0345, 0426
-			dw 0507, 0587, 0668, 0669, 0750, 0830, 0911, 0992, 0912, 0832
-			dw 0752, 0672, 0592, 0512, 0432, 0352, 0995, 0915, 0835, 0755
-			dw 0675, 0595, 0515, 0435, 0355, 0356, 0357, 0358, 0359, 0360
-			dw 0361, 0362, 0442, 0522, 0602, 0682, 0762, 0842, 0922, 1002
-			dw 0676, 0677, 0678, 0679, 0680, 0681, 0365, 0445, 0525, 0605
-			dw 0685, 0765, 0845, 0925, 1005, 0372, 0451, 0530, 0609, 0608
-			dw 0687, 0686, 0768, 0769, 0850, 0931, 1012, 0382, 0381, 0380
-			dw 0379, 0378, 0377, 0376, 0375, 0455, 0535, 0615, 0695, 0775
-			dw 0855, 0935, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022
-			dw 0696, 0697, 0698, 0699, 0700, 0701, 0702
-		.text_1:
-			db "DEVELOPED BY O.L. (C) 2017", 0
-		.text_2:
-			db "WRITTEN IN ASSEMBLY 8086 LANGUAGE :)", 0
-		.text_3:
-			db "PRESS ANY KEY TO START", 0
-		.text_4:
-			db "                      ", 0
-
 	print_score:
-			mov si, .text
+			mov si, .start
 			mov di, 0
 			call buffer_print_string
 			mov ax, [score]
@@ -218,8 +140,8 @@ section .text
 			cmp ax, 0
 			jnz .next_digit
 			ret
-		.text:
-			db " SCORE: 000000", 0
+		.start:
+			db " PONTOS: 00000", 0
 
 	update_snake_direction:
 			mov ah, 1
@@ -295,7 +217,7 @@ section .text
 			call buffer_read
 			cmp bl, 8
 			jle .set_game_over
-			cmp bl, '*'
+			cmp bl, '@'
 			je .food
 			cmp bl, ' '
 			je .empty_space
@@ -361,17 +283,17 @@ section .text
 		ret
 
 	create_initial_foods:
-			mov cx, 10
-		.again:
+			xor cx, cx
+			;mov cx, 1
+		;.again:
 			push cx
 			call create_food
 			pop cx
-			loop .again
+			;loop .again
 
 	; TODO: needs to fix when there isn't more free position available
 	create_food:
 		.try_again:
-			; ref.: http://webpages.charter.net/danrollins/techhelp/0245.HTM
 			mov ah, 0
 			int 1ah ; cx = hi dx = low
 			mov ax, dx
@@ -387,7 +309,7 @@ section .text
 			mov al, [di + bx]
 			cmp al, ' ' ; create food just in empty position
 			jnz .try_again
-			mov byte [di + bx], '*'
+			mov byte [di + bx], '@'
 			ret
 
 	reset:
@@ -452,26 +374,25 @@ section .text
 			ret
 		
 	show_game_over:
-			mov si, .text_1
+			mov si, .start_1
 			mov di, 880 + 32
 			call buffer_print_string
-			mov si, .text_2
+			mov si, .start_2
 			mov di, 960 + 32
 			call buffer_print_string
-			mov si, .text_1
+			mov si, .start_1
 			mov di, 1040 + 32
 			call buffer_print_string
 			call buffer_render
-			mov si, 48
-			call sleep
 			call clear_keyboard_buffer
 			mov ah, 0
 			int 16h
 			ret
-		.text_1:
+		.start_1:
 			db "               ", 0
-		.text_2:
-			db "   GAME OVER   ", 0
+		.start_2:
+			db "PERDEU PARCEIRO", 0
+
 
 section .bss
 		score resw 1
