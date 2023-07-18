@@ -253,9 +253,6 @@ check_snake_new_position:
     cmp bl, ' '
     je .empty_space
 
-.set_game_over:
-    cmp al, 1
-    mov byte [is_game_over], al
 
 .write_new_head:
     mov bl, 1
@@ -272,6 +269,9 @@ check_snake_new_position:
     ; always generate other food
     call create_food
     jmp .end
+
+.set_game_over:
+    mov byte [is_game_over], al
 
 .empty_space:
     call update_snake_tail
